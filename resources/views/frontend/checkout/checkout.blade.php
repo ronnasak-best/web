@@ -3,7 +3,58 @@
 @section('content')
 <div class="row ">
     <div class="col-md-7 col-pad-0">
-        <form class="forms-sample" method="post" action="{{url('payment')}}" >
+      <div class="card">
+        <div class ="card-header">
+          <div class ="row">
+            ที่อยู่จัดส่ง
+            <div class = "ml-auto">
+              <a class ="pr-2" href="{{route('myaccount.index')}}"> เพิ่มที่อยู่ </a>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+             @foreach ($addr_default as $add_d)
+              <div  class="address_box"style="border-bottom: 1px solid #ddd; display: flex; padding: 10px 10px 10px; background-color: rgb(233, 233, 233);">
+                <div class="radio">
+                    <input class="address" type="radio" name="address" value="{{$add_d['id']}} "checked>
+                </div>
+                <div class="AddressText" style="margin-left:20px;">
+                  <h5>{{$add_d['name']}} {{$add_d['surname']}}</h5>
+                  <p>{{$add_d['address']}} | {{$add_d['sub_district']}},{{$add_d['district']}},{{$add_d['province']}},{{$add_d['pincode']}}</p>
+                  <p>Mobile : {{$add_d['mobile']}}</p>
+                </div>
+              </div>
+              @endforeach
+        </div>
+      </div>
+      <div class="card mt-5 ">
+        <div class ="card-header">
+          <div class ="row">
+            ช่องทางการชำระเงิน
+            <div class = "ml-auto">
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+        <div class="row mb-2">
+              <div class=" row col-6">   
+                <div class="row_box">
+                  <img style="border-radius: 30%;"src="{{ asset('/images/ktb.jpg') }}" width="140" height="140"alt=""><br>
+                  <label style="padding-top:15px">Krung Thai Bank</label>
+                </div>
+
+              </div>
+              <div class=" row col-6">          
+                <div class="row_box">
+                  <img style=" border-radius: 30%;" src="{{ asset('/images/scb.jpg') }}" width="140" height="140"alt=""><br>
+                  <label style="padding-top:15px">Siam Commercial Bank</label>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+
+        <!-- <form class="forms-sample" method="post" action="{{url('payment')}}" >
           {{csrf_field()}}
           <div class="card">
           <div class="card-header">
@@ -36,8 +87,8 @@
             <div class="pickup box" style="display: none";>
               <hr style="border-top: 2px solid #eee;">
                 <p>กรุณาเข้ามารับที่ร้านก่อนถึงเวลาวันจองของวันแรก 2 หรือ 1 วัน ( แจ้งรหัสออเดอร์กับพนักงานได้เลย ) <br>
-เมื่อลูกค้ารับที่ร้าน กรุณาส่งคืนชุดด้วยตนเองที่ร้าน
-</p>
+                  เมื่อลูกค้ารับที่ร้าน กรุณาส่งคืนชุดด้วยตนเองที่ร้าน
+                  </p>
             </div>
             <div class="delivery box" style="display: none;">
               <hr style="border-top: 2px solid #eee;">
@@ -73,7 +124,7 @@
         </div>
         <br>
         <input class=" float-right"type="submit" name="" value="Payment">
-        </form>
+        </form> -->
     </div>
     <div class="col-md-5">
         <div class="card sm-6">
