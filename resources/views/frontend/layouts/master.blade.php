@@ -176,8 +176,8 @@
             }
 
             input[name="delivery_op"],input[name="address"]{
-              width: 2em;
-              height: 2em;
+              width: 1em;
+              height: 1em;
               cursor: pointer;
               margin-bottom: 20px;
 

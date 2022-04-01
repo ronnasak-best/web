@@ -140,19 +140,20 @@ class CheckoutController extends Controller
     }
     public function payment(Request $request)
     {
-        $address = Address::where('users_id', auth()->user()->id)->get();
-        $count = count($address);
-      //  dd($count);
+      dd($request->all());
+      //   $address = Address::where('users_id', auth()->user()->id)->get();
+      //   $count = count($address);
+      // //  dd($count);
 
-        if($count==0)
-        {
-          return redirect('myaccount')->with('message','Please Add Address');
-        }else {
-          $id_add = $request->all();
-          $addr =  DB::table('addresses')->where('id', $id_add['address'] )->first();
-        //  dd($addr);
-          return view('frontend.checkout.payment',compact('addr','id_add'));
-        }
+      //   if($count==0)
+      //   {
+      //     return redirect('myaccount')->with('message','Please Add Address');
+      //   }else {
+      //     $id_add = $request->all();
+      //     $addr =  DB::table('addresses')->where('id', $id_add['address'] )->first();
+      //   //  dd($addr);
+      //     return view('frontend.checkout.payment',compact('addr','id_add'));
+      //   }
 
     }
 }
