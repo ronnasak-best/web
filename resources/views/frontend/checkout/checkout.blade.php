@@ -13,10 +13,10 @@
                     </div>
                 </div>
             </div>
-            <form class="forms-sample" method="post" action="{{ url('payment') }}">
+            <form class="forms-sample" method="post" action="{{ route('check-out.store') }}">
                 {{ csrf_field() }}
                 <div class="card-body">
-                   
+
                     <div id="addr_selects">
                         @foreach ($addr_default as $add_d)
                         <div class="address_box" style="display:block; ">
@@ -30,10 +30,10 @@
                                     </div>
 
                                 </div>
-                                <div class="AddressText" >
+                                <div class="AddressText">
                                     <p>{{ $add_d['address'] }} |
                                         {{ $add_d['sub_district'] }},{{ $add_d['district'] }},{{ $add_d['province'] }},{{ $add_d['pincode'] }}
-                                    </p>
+                                    </p><b>[ค่าเริ่มต้น]</b>
                                 </div>
                             </div>
                         </div>
@@ -50,7 +50,7 @@
                                     </div>
 
                                 </div>
-                                <div class="AddressText" >
+                                <div class="AddressText">
                                     <p>{{ $add['address'] }} |
                                         {{ $add['sub_district'] }},{{ $add['district'] }},{{ $add['province'] }},{{ $add['pincode'] }}
                                     </p>
@@ -58,7 +58,7 @@
                             </div>
                         </div>
                         @endforeach
-                        <div class="sub_change float-right"  style="display: none;">
+                        <div class="sub_change float-right" style="display: none;">
                             <button type="button" onclick="addr_change()" name="" id=""
                                 class="btn btn-primary">บันทึก</button>
                         </div><br>
@@ -96,6 +96,26 @@
         </div>
     </div>
     <div class="col-md-5">
+        <div class="card sm-6 mb-2">
+            <div class="card-header">
+                ระยะเวลาในการเช่า
+            </div>
+            <div class="card-body ">
+                <div class="from-group row">
+                    <div class="col-12 labels">
+                        <input type="radio" name="day_rant" class="day_rant" value="3">
+                        <label for="male">4 day</label><br>
+                    </div>
+                </div>
+                <hr style="border-top: 2px solid #eee;">
+                <div class="form-group row  labels">
+                    <label class="col-sm-3 col-form-label">From :</label>
+                    <div class="col-sm-8 pl-0">
+                        <input type="text" name="daterange" class="form-control">
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="card sm-6">
             <div class="card-header">
                 Ordering information
@@ -118,9 +138,7 @@
                                         style="width: 50px; height:75px" class="rounded">
                                     <div class="product-detail">
                                         <spam>{{ $row->name }}</spam><br>
-                                        <a>SIZE : {{ $row->options->size }}</a><br>
-                                        <a>FROM : {{ $row->options->startDate }}</a><br>
-                                        <a>TO : {{ $row->options->endDate }}</a>
+                                        <a>SIZE : {{ $row->options->size }}</a><br>                               
                                     </div>
                                 </td>
 
@@ -171,11 +189,41 @@
                 </div>
             </div>
         </div>
+        <input name="startdate" class ="startdate" type="hidden"   /></p>
+        <input name="enddate" class ="enddate" type="hidden" /></p>
         <input class=" float-right" type="submit" name="" value="Payment">
         </form>
     </div>
 </div>
+<script>
+$(".day_rant").change(function() {
+    let n_day = $(this).val();
+    $('input[name="daterange"]').daterangepicker({
+        locale: {
+            format: "DD/MM/YYYY"
+        },
+        autoApply: true,
+        dateLimit: {
+            days: n_day
+        },
+        startDate: moment().startOf('day'),
+        endDate: moment().startOf('day').add(n_day, 'day'),
+        minDate: new Date()
+    });
+    $(".startdate").val(moment().startOf('day').format("DD/MM/YYYY"));
+    $(".enddate").val(moment().startOf('day').add(n_day, 'day').format("DD/MM/YYYY"));
 
+    $('input[name="daterange"]').on('showCalendar.daterangepicker', function(ev, picker) {
+        var startDate = picker.startDate.format("DD/MM/YYYY");
+        var endDate = picker.startDate.add(n_day, 'day').format("DD/MM/YYYY");
+        $('input[name="daterange"]').data('daterangepicker').setStartDate(startDate);
+        $('input[name="daterange"]').data('daterangepicker').setEndDate(endDate);
+        $(".startdate").val(startDate);
+        $(".enddate").val(endDate);
+    });
+
+});
+</script>
 <script>
 function addr_select() {
     let addr = document.querySelector("#addr_selects");
@@ -189,10 +237,10 @@ function addr_change() {
     $('.address-item').each(function(i) {
         if ($(this).is(":checked")) {
             $('.address_box').css('display', 'none') &&
-                $(this).closest(".address_box").css('display', 'block')
-                && $('.sub_change').css('display', 'none');
+                $(this).closest(".address_box").css('display', 'block') &&
+                $('.sub_change').css('display', 'none');
         }
-       
+
         // if($(this).find('input:checked').length > 0){
         //   console.log("dsrfs");
         //   // 
@@ -219,4 +267,5 @@ $(document).ready(function() {
     });
 });
 </script>
+
 @endsection

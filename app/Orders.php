@@ -11,10 +11,10 @@ class Orders extends Model
   //protected $casts = [ 'id' => 'string' ];
   protected $keyType = 'string';
   protected $fillable = [
-      'id','user_id','billing_name','billing_surname','billing_address','billing_province',
-      'billing_district','billing_sub_district','billing_pincode','billing_phone',
-      'bank_name','account_name','account_no',
-      'bank','billing_subtotal','billing_deposit','billing_refund','billing_total','delivery_op','status','image'
+      'id','user_id','billing_name','billing_address','billing_phone'
+      ,'startDate','endDate','late','other_fine','billing_subtotal','billing_deposit','billing_refund','billing_total'
+      ,'tracking_no_send','image_payment_return','image_return_slip','payment_slip','status'
+      
   ];
 
   public function user()

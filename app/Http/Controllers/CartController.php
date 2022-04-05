@@ -41,8 +41,6 @@ class CartController extends Controller
       if($product['size']=="")
       {
         return back()->with('message','Please select Size');
-      }elseif ($product['startdate']=="" && $product['enddate']=="") {
-        return back()->with('message','Please select Date');
       }else {
         $sizeAtrr=explode("-",$product['size']);
         $product['size']=$sizeAtrr[1];
@@ -51,14 +49,12 @@ class CartController extends Controller
                   'qty' => 1,
                   'price' => $product['price'],
                   'weight'=>1,
-                  'options' => ['image'=>$product['product_image'],
-                                'startDate'=>$product['startdate'],
-                                'endDate'=>$product['enddate'],
+                  'options' => ['image'=>$product['product_image'],                   
                                 'size'=>$product['size']
                                 ]
                               ];
 
-        Cart::add($product);
+        Cart::add($product);       
         return redirect()->route('cart.index')->with('success_message', 'Item was added to your cart!');
       }
 

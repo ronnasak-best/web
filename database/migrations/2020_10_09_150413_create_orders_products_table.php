@@ -16,17 +16,10 @@ class CreateOrdersProductsTable extends Migration
         Schema::create('orders_products', function (Blueprint $table) {
             $table->increments('id');
             $table->string('order_id')->nullable();
-            $table->integer('product_id')->unsigned()->nullable();
-            $table->string('startDate');
-            $table->string('endDate');
+            $table->integer('product_id')->unsigned()->nullable();           
             $table->string('size');
-            $table->integer('quantity')->unsigned();
-            $table->integer('status')->default(1);
-            $table->string('image')->default(false);
-            $table->integer('late');
-            $table->integer('other_fine');
-            $table->string('fine_detail');
-            $table->string('tracking_no');
+            $table->integer('quantity')->unsigned();                       
+            $table->string('fine_detail');        
             $table->timestamps();
         });
     }

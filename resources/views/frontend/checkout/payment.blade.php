@@ -6,7 +6,7 @@
     <div class="col-md-7 col-pad-0">
       <form class="" action="{{ route('check-out.store') }}" method="post">
         {{csrf_field()}}
-        <input type="hidden" name="delivery_op" value="{{$id_add['delivery_op']}}">
+        
           <div class="card" >
           <div class="card-header" >
             Featured

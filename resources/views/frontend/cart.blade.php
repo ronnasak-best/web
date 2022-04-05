@@ -27,9 +27,7 @@
             <td>
                 <div class="product-detail" style="text-align: left;">
                     <spam>{{$row->name}}</spam><br>
-                    <a>SIZE : {{$row->options->size}}</a><br>
-                    <a>FROM : {{$row->options->startDate}}</a><br>
-                    <a>TO : {{$row->options->endDate}}</a>
+                    <a>SIZE : {{$row->options->size}}</a><br>               
                 </div>
 
             </td>
