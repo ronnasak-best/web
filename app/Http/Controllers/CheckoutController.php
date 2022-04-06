@@ -47,46 +47,37 @@ class CheckoutController extends Controller
         {
           return back()->with('message','Please select Size');
         }
-        
-        $address = Address::find($request->address_id);
+        $address = Address::find($request->address);
         $total = Cart::Subtotal() *2;
         $id = IdGenerator::generate(['table' => 'orders', 'length' => 10, 'prefix' =>'WD']);
         $order = Orders::create([
                 'id' => $id,
                 'user_id' => auth()->user()->id ,
-                'billing_name' => $address->name,
-                'billing_surname' =>$address->surname,
-                'billing_address' => $address->address,
-                'billing_province' => $address->province,
-                'billing_district' => $address->district,
-                'billing_sub_district' => $address->sub_district,
-                'billing_pincode' => $address->pincode,
+                'billing_name' => "$address->name $address->surname",
+                'billing_address' => "$address->address $address->subdistrict $address->district $address->province $address->pincode",
                 'billing_phone' => $address->mobile,
+                'startDate' => $request->startdate,
+                'endDate' => $request->enddate,
                 'bank_name' => $address->txtBank,
                 'account_name' => $address->account_name,
                 'account_no' => $address->account_no,
-                'bank' =>$request->bank,
                 'billing_subtotal' => Cart::Subtotal(),
                 'billing_deposit'=> Cart::Subtotal(),
                 'billing_refund' =>Cart::Subtotal(),
                 'billing_total' => $total,
-                'delivery_op' => $request->delivery_op
-
             ]);
 
             // Insert into order_product table
             foreach (Cart::content() as $item) {
 
-            $product_atrr = ProductAtrr::where('products_id',$item->id)
-                                        ->where('size',$item->options->size)
-                                        ->first();
-            $product_atrr->stock = $product_atrr->stock - $item->qty;
-            $product_atrr->save();
+                $product_atrr = ProductAtrr::where('products_id',$item->id)
+                                            ->where('size',$item->options->size)
+                                            ->first();
+                $product_atrr->stock = $product_atrr->stock - $item->qty;
+                $product_atrr->save();
                 OrdersProduct::create([
                     'order_id' => $id,
-                    'product_id' => $item->id,
-                    'startDate' => $item->options->startDate,
-                    'endDate' => $item->options->endDate,
+                    'product_id' => $item->id,                   
                     'size' => $item->options->size,
                     'quantity' => $item->qty,
                 ]);

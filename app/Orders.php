@@ -13,6 +13,7 @@ class Orders extends Model
   protected $fillable = [
       'id','user_id','billing_name','billing_address','billing_phone'
       ,'startDate','endDate','late','other_fine','billing_subtotal','billing_deposit','billing_refund','billing_total'
+      ,'account_name','account_no','bank_name'
       ,'tracking_no_send','image_payment_return','image_return_slip','payment_slip','status'
       
   ];

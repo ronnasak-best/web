@@ -17,8 +17,13 @@ class OrderController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
+    { 
+     // dd(auth()->user()['id']);
       $orders = auth()->user()->orders()->get();
+      //$orders=Orders::where('user_id',auth()->user()['id'])->get();
+      $orders_product=OrdersProduct::all();
+      //dd(json_decode($orders_product));
+      //dd(json_decode($orders));
       return view('frontend.user.myorders',compact('orders'));
     }
 
@@ -51,10 +56,11 @@ class OrderController extends Controller
      */
     public function show(Orders $order)
     {
-
+      //dd($id);
       $orderproduct = $order->ordersproduct ;
-        //$ordersproduct = OrdersProduct::where('order_id',$id)->first();
-      //  dd($order);
+     // dd($orderproduct[0]->product);
+     // $ordersproduct = OrdersProduct::where('order_id',$id)->first();
+       
         return view('frontend.user.myorder',compact('orderproduct','order'));
     }
 

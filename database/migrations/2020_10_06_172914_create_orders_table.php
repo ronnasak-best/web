@@ -28,9 +28,10 @@ class CreateOrdersTable extends Migration
             $table->integer('billing_deposit');
             $table->integer('billing_refund');
             $table->integer('billing_total');    
-      
+    
             $table->string('account_name');
             $table->string('account_no');
+            $table->string('bank_name');
             
             $table->string('tracking_no_send');  
             $table->string('image_payment_return')->default(false);
