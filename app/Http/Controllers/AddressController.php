@@ -13,11 +13,12 @@ class AddressController extends Controller
      */
     public function index()
     {
-          $id=auth()->user()->id;
+        $id=auth()->user()->id;
         //  dd($id);
-          $address = Address::where('users_id',$id)->get();
-          //dd($address);
-          return view('frontend.user.myaccount',compact('address'));
+        $address_default = Address::where([['users_id',$id],['default',1]])->get();
+        $address = Address::where([['users_id',$id],['default',0]])->get();
+        //dd($address_default);
+        return view('frontend.user.myaccount',compact('address','address_default'));
     }
 
     /**

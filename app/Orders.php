@@ -22,10 +22,10 @@ class Orders extends Model
     {
         return $this->belongsTo(User::class);
     }
-    public function ordersproduct()
-      {
-          return $this->hasMany(OrdersProduct::class,'order_id','id');
-      }
+  public function ordersproduct()
+    {
+        return $this->hasMany(OrdersProduct::class,'order_id','id');
+    }
 
 
 

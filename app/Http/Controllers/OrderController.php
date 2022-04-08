@@ -19,7 +19,7 @@ class OrderController extends Controller
     public function index()
     { 
      // dd(auth()->user()['id']);
-      $orders = auth()->user()->orders()->get();
+      $orders = auth()->user()->orders()->orderBy('id', 'DESC')->get();
       //$orders=Orders::where('user_id',auth()->user()['id'])->get();
       $orders_product=OrdersProduct::all();
       //dd(json_decode($orders_product));

@@ -42,7 +42,8 @@
     a {
         color: #1B1B1B;
     }
-    .title-text>a{
+
+    .title-text>a {
         color: #dc81b3;
     }
 
@@ -540,6 +541,11 @@
         color: white;
     }
 
+    .btn-status.status-done {
+        background-color: #32B657;
+        color: white;
+    }
+
     .card-order-header {
         display: flex;
         justify-content: space-between;
@@ -622,9 +628,10 @@
         font-size: 15px;
 
     }
-    .active{
+
+    .active {
         color: #dc81b3;
-       
+
     }
 
     .sub-menu-account.profile {
@@ -651,6 +658,147 @@
         margin-left: 15px;
         border-left: 1px solid #ddd;
         margin-bottom: 20px;
+    }
+
+    #card_order {
+
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        transition: 0.3s;
+    }
+
+    #card_order:hover {
+        box-shadow: 0 8px 16px 0 #ffcee7;
+    }
+
+    .title-head {
+        display: flex;
+        align-items: start;
+        justify-content: flex-start;
+        padding: 16px;
+        background-color: #FAFAFA;
+        border-bottom: solid 1px #ddd;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+
+    .title-text {
+        padding-left: 10px;
+        min-width: max-content;
+    }
+
+    .title-text h2 {
+        margin-bottom: 0;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .title-text span {
+        font-size: 12px;
+        color: #858585;
+    }
+
+    .shipping-address {
+        padding: 16px 30px 16px 50px;
+        display: flex;
+        align-items: center;
+        border-bottom: solid 1px #ddd;
+    }
+
+    .edit button {
+        font-size: 14px;
+        font-weight: bold;
+        color: #0066DD;
+        outline: none;
+        padding: 8px;
+        border: unset;
+        background-color: unset;
+    }
+
+    button:disabled {
+        cursor: not-allowed;
+        color: #ddd !important;
+    }
+
+    .shipping-address .edit {
+        width: 15%;
+        text-align: right;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+    }
+
+    .shipping-address .address-info {
+        font-size: 14px;
+        width: 60%;
+    }
+
+    .shipping-address .name-phone {
+        font-size: 16px;
+        font-weight: bold;
+        text-align: left;
+        width: 25%;
+    }
+
+    .default-shipping {
+        font-weight: bold;
+    }
+
+    .input-item .label {
+        margin: 12px 0 4px 0;
+    }
+
+
+
+    .input-item input:focus,
+    .input-item textarea:focus,
+    .input-item .input {
+        border-color: #0066DD;
+    }
+
+    .input-item input,
+    .input-item textarea,
+    .input-item .input {
+        border: solid 1px #ddd;
+        width: 100%;
+        outline: none;
+        border-radius: 8px;
+        height: 44px;
+        padding-left: 12px;
+    }
+
+    .input-item textarea {
+        height: unset;
+    }
+
+    .modal-header {
+        justify-content: initial;
+        border: unset;
+    }
+
+    .modal-title {
+        display: flex;
+        align-items: center;
+    }
+
+    .modal-title h1 {
+        margin-bottom: 0;
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 21px;
+        margin-left: 8px;
+        color: #1B1B1B;
+    }
+
+    .modal-title span {
+        margin-left: 8px;
+        font-size: 12px;
+        color: #858585;
+        line-height: 18px;
+    }
+    
+    .error-message {
+        margin-top: 4px;
+        display: none;
     }
     </style>
 
@@ -736,7 +884,8 @@
         // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
         var modal = $(this)
         modal.find('.modal-title').text('Notification : Slip payment file Order number : ' + recipient)
-        modal.find('.modal-body img').attr('src', '{{url(' / ')}}/slip/' + img)
+        modal.find('.modal-body img').attr('src', '{{url('
+            ')}}/slip/' + img)
     })
     $('#returnModal').on('show.bs.modal', function(event) {
         var button = $(event.relatedTarget) // Button that triggered the modal
@@ -785,11 +934,11 @@
     </script>
     <script>
     if (window.location.pathname == '/orders') {
-       // $('.sub-menu-item.profile').addClass('active');
+        // $('.sub-menu-item.profile').addClass('active');
         $('.menu-account-item.orderlist-menu').addClass('active');
-    }else if(window.location.pathname == '/myaccount'){
+    } else if (window.location.pathname == '/myaccount') {
         $('.sub-menu-item.profile').addClass('active');
-        
+
     }
     </script>
 </body>
