@@ -8,7 +8,7 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.0",
+        "php": "^8.0.2",
         "fideloper/proxy": "^4.0",
         "hardevine/shoppingcart": "^2.9",
         "haruncpi/laravel-id-generator": "^1.0",
@@ -31,9 +31,7 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": [
-                "laravel/dusk"
-            ]
+            "dont-discover": []
         }
     },
     "autoload": {
