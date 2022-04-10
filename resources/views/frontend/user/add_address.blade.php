@@ -127,97 +127,256 @@
 
 
 <script>
-$('#input_province').click(function() {
-    console.log("HELLO");
-    showProvinces();
-    //dataTable();
-});
-
-function showProvinces() {
-    //PARAMETERS
-    var url = "{{ url('/') }}/province";
-    var callback = function(result) {
-        $("#input_province").empty();
-        for (var i = 0; i < result.length; i++) {
-            $("#input_province").append(
-                $('<option></option>')
-                .attr("value", "" + result[i].province)
-                .html("" + result[i].province)
-            );
-        }
-        showAmphoes();
-    };
-    //CALL AJAX
-    ajax(url, callback);
+let shippingAddressData = []
+$(window).ready(async function() {
+    $('.sub-menu-item.address').addClass('active')
+    $('#tab_bar_main_card').hide()
+    shippingAddressData = await getShipingAddress()
+})
+const initForm = {
+    address_name: '',
+    phone_number: '',
+    address: '',
+    province_id: '',
+    amphure_id: '',
+    tambon_id: '',
+    postcode: '',
+    is_default_shipping: 0,
+}
+const label = {
+    province_id: 'เลือกจังหวัด',
+    amphure_id: 'เลือกอำเภอ/เขต',
+    tambon_id: 'เลือกตำบล/แขวง',
+    postcode: 'เลือกรหัสไปรษณีย์',
 }
 
+function resetFormValue() {
+    for (const [key, value] of Object.entries(initForm)) {
+        // reset error message
+        $(`[error-for=${key}]`).removeClass('error')
+        $(`[error-text-for=${key}]`).removeClass('error')
 
-function showAmphoes() {
-    //INPUT
-    var province_code = $("#input_province").val();
-    //PARAMETERS
-    var url = "{{ url('/') }}/province/" + province_code + "/amphoe";
-    var callback = function(result) {
-        //console.log(result);
-        $("#input_amphoe").empty();
-        for (var i = 0; i < result.length; i++) {
-            $("#input_amphoe").append(
-                $('<option></option>')
-                .attr("value", "" + result[i].amphoe)
-                .html("" + result[i].amphoe)
-            );
-        }
-        showDistricts();
-    };
-    //CALL AJAX
-    ajax(url, callback);
+        // reset value
+        $(`[selector-label=${key}]`).html(label[key])
+        $(`[name=${key}]`).val(null)
+    }
+    $('input[name=is_default_shipping]').prop('checked', false)
+    $('button[type=submit]').prop('disabled', false)
+    $(`[name=address_id]`).val(null)
+    $('#button-delete-shipping-address').hide()
+    $('.shippingTitle').text('เพิ่มที่อยู่ใหม่')
 }
 
-function showDistricts() {
-    //INPUT
-    var province_code = $("#input_province").val();
-    var amphoe_code = $("#input_amphoe").val();
-    //PARAMETERS
-    var url = "{{ url('/') }}/province/" + province_code + "/amphoe/" + amphoe_code + "/district";
-    var callback = function(result) {
-        //console.log(result);
-        $("#input_district").empty();
-        for (var i = 0; i < result.length; i++) {
-            $("#input_district").append(
-                $('<option></option>')
-                .attr("value", "" + result[i].district)
-                .html("" + result[i].district)
-            );
-        }
-        showZipcode();
-    };
-    //CALL AJAX
-    ajax(url, callback);
+let isAddressEmpty = (2 === 0);
+if (!isAddressEmpty) {
+    $('#is-default-shipping').removeClass('hide')
 }
-
-function showZipcode() {
-    //INPUT
-    var province_code = $("#input_province").val();
-    var amphoe_code = $("#input_amphoe").val();
-    var district_code = $("#input_district").val();
-    //PARAMETERS
-    var url = "{{ url('/') }}/province/" + province_code + "/amphoe/" + amphoe_code + "/district/" + district_code;
-    var callback = function(result) {
-        //console.log(result);
-        for (var i = 0; i < result.length; i++) {
-            $("#input_zipcode").val(result[i].zipcode);
+/** On submit form shipping address */
+function handleFormSubmit() {
+    if (validateForm()) {
+        for (const [key, value] of Object.entries(initForm)) {
+            if (key === 'is_default_shipping') {
+                initForm[key] = $(`[name=${key}]`).is(":checked")
+            } else {
+                initForm[key] = $(`[name=${key}]`).val()
+            }
         }
-    };
-    //CALL AJAX
-    ajax(url, callback);
-}
-
-function ajax(url, callback) {
-    $.ajax({
-            "url": url,
-            "type": "GET",
-            "dataType": "json",
+        if (isAddressEmpty) {
+            initForm['is_default_shipping'] = 1 // true
+        }
+        $('button[type=submit]').prop('disabled', true)
+        $('button[type=submit]').addClass('loading')
+        isUpdate = !!$('input[name=address_id').val()
+        $.ajax({
+            url: `/api/customer-address/134868/${isUpdate ? +$("input[name=address_id").val() : ''}`,
+            method: isUpdate ? 'PUT' : 'POST',
+            data: {
+                ...initForm,
+                type: 'create',
+                is_default_billing: 0,
+                is_default_shipping: initForm['is_default_shipping'] ? 1 : 0,
+                type: isUpdate ? 'update' : 'create',
+            },
+            crossDomain: true,
+            dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+            },
+            success: (resp) => {
+                isAddressEmpty = false
+                renderAddressList()
+                swal({
+                    html: '<div class="success-alert"><img src="https://www.mercular.com/img/icons/success.svg" /><p style="font-size: 18px;font-weight: bold;margin-top:48px;">บันทึกข้อมูลสำเร็จ</p></div>',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(function() {
+                    $('button[type=submit]').prop('disabled', false)
+                    $('#address-form').modal('hide')
+                })
+            },
+            error: (err) => {
+                console.log(err)
+            }
         })
-        .done(callback); //END AJAX
+    }
+}
+
+function validateForm() {
+    let isvalid = true
+    for (const [key, value] of Object.entries(initForm)) {
+        if (
+            key === 'phone_number' &&
+            $(`input[name=${key}]`).val() &&
+            $(`input[name=${key}]`).val().length < 9
+        ) {
+            isvalid = false
+            $('[error-text-for=phone_number]').html('กรอกหมายเลขโทรศัพท์ไม่ครบตามจำนวนที่กำหนด')
+            $(`[error-for=${key}]`).addClass('error')
+            $(`[error-text-for=${key}]`).addClass('error')
+            continue
+        }
+
+        if (key !== 'is_default_shipping' && !$(`[name=${key}]`).val()) {
+            isvalid = false;
+            $(`[error-for=${key}]`).addClass('error')
+            $(`[error-text-for=${key}]`).addClass('error')
+        } else {
+            $(`[error-for=${key}]`).removeClass('error')
+            $(`[error-text-for=${key}]`).removeClass('error')
+        }
+    }
+    return isvalid
+}
+
+async function renderAddressList() {
+    try {
+        const resp = await getShipingAddress()
+        shippingAddressData = resp
+        $('#shipping-address-list').empty()
+        resp.forEach(address => {
+            $('#shipping-address-list').append(`
+                <div class="shipping-address">
+                    <div class="name-phone"> 
+                        ${address.name} <br/> <b class="sm-down"> | </b>
+                        ${address.phone_number}
+                    </div>
+                    <div class="address-info"> 
+                        ${[address.address, address.tambon, address.amphure, address.province, address.postcode].join(' ')} 
+                        ${address.is_default_shipping === '1' ? '<span class="default-shipping"> [ค่าเริ่มต้น] </span>' : ''}
+                    </div>
+                    <div class="edit">
+                        <button onclick="setFormValueForEdit(${address.id})" class="button">
+                            แก้ไข
+                        </button>
+                        <button onclick="handleClickDeletAddress(${address.id})" ${address.is_default_shipping === '1' ? 'disabled': ''} class="button">
+                            ลบ
+                        </button>
+                    </div>
+                    <div onclick="handleClickEditOfMobile(${address.id}, ${address.is_default_shipping || false})" class="mb-edit sm-down">
+                        <div class="icon">
+                            <img src="https://www.mercular.com/img/icons/arrow-down.svg">
+                        </div>
+                    </div>
+                </div>
+                `)
+            $('#no-shipping-address').hide()
+        });
+    } catch (error) {
+        swal({
+            type: 'error',
+            title: 'Oops!',
+            text: 'Something went wrong!',
+        })
+        console.error(error)
+    }
+}
+
+async function getShipingAddress() {
+    return await $.ajax({
+        url: '/cart/address/json',
+        method: 'GET',
+        crossDomain: true,
+        dataType: 'json',
+        xhrFields: {
+            withCredentials: true
+        },
+    })
+}
+
+function handleClickDeletAddress(id, isMobile = false) {
+    const closeModal = isMobile ? () => $('#address-form').modal('hide') : () => null
+    if (id && id !== "") {
+        swal({
+            html: `
+                <div id="confirm-delete-dialog">
+                    <img src='https://www.mercular.com/img/icons/dialog-warning.svg' alt='' />
+                    <h5> คุณต้องการลบที่อยู่นี้ </h5>
+                    <div class="action">
+                        <a onclick="window.swal.close()" class="button default"> ยกเลิก </a>
+                        <a onclick="deleteAddress(${id}); ${isMobile} ? $('#address-form').modal('hide') : ''" class="confirm-delete button primary"> ลบที่อยู่ </a>
+                    </div>
+                </div>
+                `,
+            showConfirmButton: false,
+        })
+    }
+}
+async function deleteAddress(id) {
+    swal.close()
+    $('#button-delete-shipping-address').hide()
+    var customerId = '134868';
+    var url = 'https://www.mercular.com/api/customer-address/' + customerId + '/' + id;
+    await $.ajax({
+        url: url,
+        type: 'DELETE'
+    })
+    renderAddressList()
+}
+
+function handleClickEditOfMobile(id, isDefault) {
+    if (isDefault) {
+        $('#button-delete-shipping-address').hide()
+    } else {
+        $('#button-delete-shipping-address').show()
+        $('#button-delete-shipping-address button').attr('address-id', id)
+    }
+    setFormValueForEdit(id)
+}
+
+async function setFormValueForEdit(id) {
+    $('input[name=address_id').val(id)
+    const addressSelected = shippingAddressData.find(each => each.id == id)
+    const apiKey = {
+        name: 'address_name',
+        phone_number: 'phone_number',
+        address: 'address',
+        province_id: 'province_id',
+        amphure_id: 'amphure_id',
+        tambon_id: 'tambon_id',
+        postcode: 'postcode',
+        is_default_shipping: 0,
+    }
+    const valueKey = {
+        province_id: 'province',
+        amphure_id: 'amphure',
+        tambon_id: 'tambon',
+        postcode: 'postcode',
+    }
+    for (const [key, value] of Object.entries(apiKey)) {
+        if (key === 'is_default_shipping') {
+            initForm[key] = $(`[name=${key}]`).prop('checked', addressSelected[key] == '1')
+        } else {
+            $(`[selector-label=${key}]`).html(addressSelected[valueKey[key]])
+            $(`[name=${value}]`).val(addressSelected[key])
+        }
+    }
+    $('#address-form').modal('show')
+    $('.shippingTitle').text('แก้ไขที่อยู่')
+    getDistrict({
+        id: addressSelected.province_id
+    }, false)
+    getSubDistrict({
+        id: addressSelected.amphure_id
+    }, false)
 }
 </script>

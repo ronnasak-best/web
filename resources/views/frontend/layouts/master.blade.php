@@ -795,11 +795,19 @@
         color: #858585;
         line-height: 18px;
     }
-    
+
     .error-message {
         margin-top: 4px;
         display: none;
     }
+
+    .error-message.error {
+        display: block;
+        color: #E31F26;
+    }
+    .input-item .error {
+    border-color: #E31F26;
+}
     </style>
 
 </head>
@@ -817,7 +825,7 @@
     </script>
     <script src="{{asset('frontend/js/main.js')}}"></script>
     <script src="{{asset('easyzoom/js/easyzoom.js')}}"></script>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
     // Instantiate EasyZoom instances
     var $easyzoom = $('.easyzoom').easyZoom();

@@ -23,7 +23,7 @@ class CreateAddressesTable extends Migration
             $table->string('district');
             $table->string('sub_district');
             $table->string('pincode');
-            $table->integer('default');
+            $table->boolean('default_address')->default(0);
             $table->string('mobile');
             $table->string('txtBank');
             $table->string('account_name');

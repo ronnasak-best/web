@@ -16,36 +16,15 @@
             <form class="forms-sample" method="post" action="{{ route('check-out.store') }}">
                 {{ csrf_field() }}
                 <div class="card-body">
-
-                    <div id="addr_selects">
-                        @foreach ($addr_default as $add_d)
-                        <div class="address_box" style="display:block; ">
-                            <div class="row">
-                                <div class=" row col-sm-5 ml-2">
-                                    <input class="address-item mr-3 mt-2" type="radio" name="address"
-                                        value="{{ $add_d['id'] }} " checked>
-                                    <div style=" font-weight: bold;">
-                                        {{ $add_d['name'] }} {{ $add_d['surname'] }}<br>
-                                        {{ $add_d['mobile'] }}
-                                    </div>
-
-                                </div>
-                                <div class="AddressText">
-                                    <p>{{ $add_d['address'] }} |
-                                        {{ $add_d['sub_district'] }},{{ $add_d['district'] }},{{ $add_d['province'] }},{{ $add_d['pincode'] }}
-                                    </p><b>[ค่าเริ่มต้น]</b>
-                                </div>
-                            </div>
-                        </div>
-                        @endforeach
+                    <div id="addr_selects">                    
                         @foreach ($addr as $add)
-                        <div class="address_box mt-4" style="display: none; ">
+                        <div class="address_box mt-4" {{ $add['default_address'] == 1 ? 'style=display:block;' :'style=display:none;'}} >
                             <div class="row">
                                 <div class=" row col-sm-5 ml-2">
                                     <input class="address-item mr-3 mt-2" type="radio" name="address"
                                         value="{{ $add['id'] }} ">
                                     <div style=" font-weight: bold;">
-                                        {{ $add['name'] }} {{ $add['surname'] }}<br>
+                                        {{ $add['name'] }}<br>
                                         {{ $add['mobile'] }}
                                     </div>
 
@@ -53,6 +32,7 @@
                                 <div class="AddressText">
                                     <p>{{ $add['address'] }} |
                                         {{ $add['sub_district'] }},{{ $add['district'] }},{{ $add['province'] }},{{ $add['pincode'] }}
+                                        {{ $add['default_address'] == 1 ? "[ค่าเริ่มต้น]" : ''}}
                                     </p>
                                 </div>
                             </div>

@@ -20,9 +20,10 @@ class CheckoutController extends Controller
      */
     public function index()
     {
-        $addr_default = Address::where([['users_id',auth()->user()->id],['default',1]])->get();
-        $addr = Address::where([['users_id',auth()->user()->id],['default',0]])->get();
-        return view('frontend.checkout.checkout',compact('addr_default','addr'));
+        // $addr_default = Address::where([['users_id',auth()->user()->id],['default',1]])->get();
+        // $addr = Address::where([['users_id',auth()->user()->id],['default',0]])->get();
+        $addr = Address::where('users_id',auth()->user()->id)->get();
+        return view('frontend.checkout.checkout',compact('addr'));
     }
 
     /**
